@@ -58,7 +58,7 @@ Route::group(['middleware' => ['authenticated']], function () {
 
     });
 
-    Route::apiResource('foods', FoodController::class)->only(['index']);
-    Route::apiResource('food-groups', FoodGroupController::class)->only(['index']);
+    Route::apiResource('foods', FoodController::class)->only(['index', 'show', 'update']);
+    Route::apiResource('food-groups', FoodGroupController::class)->only(['index', 'update']);
     Route::apiResource('food-servings', FoodServingSizeController::class)->only(['index']);
 });
