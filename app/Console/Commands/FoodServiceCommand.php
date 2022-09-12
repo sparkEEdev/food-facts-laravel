@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Services\Food\FoodService;
 use App\Services\Food\Providers\FatSecretGoutteProvider;
+use App\Services\Food\Providers\FoodSeederProvider;
 
 class FoodServiceCommand extends Command
 {
@@ -37,7 +38,7 @@ class FoodServiceCommand extends Command
      *
      * @return int
      */
-    public function handle(FatSecretGoutteProvider $provider)
+    public function handle(FoodSeederProvider $provider)
     {
         // TODO: handle exceptions
         $foodService = new FoodService($provider);
