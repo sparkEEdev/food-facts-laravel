@@ -15,7 +15,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('crawl:fat-secret:goutte')->cron('0 9 * * *'); // every day at 9:00
+        $schedule
+            ->command('service:food')
+            ->cron('0 9 * * *'); // every day at 9:00
+        /* $schedule
+            ->command('service:food --provider=Goutte --hostname=FatSecret')
+            ->cron('0 9 * * *'); */
     }
 
     /**
