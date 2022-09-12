@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api\v1;
 use App\Models\FoodGroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Actions\FoodGroup\{GetFoodGroupsAction};
+use App\Http\Requests\v1\FoodGroup\UpdateFoodGroupRequest;
+use App\Actions\FoodGroup\{GetFoodGroupsAction, UpdateFoodGroupAction};
 
 class FoodGroupController extends Controller
 {
@@ -65,13 +66,13 @@ class FoodGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\FoodGroup  $foodGroup
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\v1\FoodGroup\UpdateFoodGroupRequest;  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse|App\Http\Resources\v1\FoodGroup\FoodGroupResource;
      */
-    public function update(Request $request, FoodGroup $foodGroup)
+    public function update(UpdateFoodGroupRequest $request, int $id, UpdateFoodGroupAction $updateFoodGroup)
     {
-        //
+        return $updateFoodGroup->execute($request, $id);
     }
 
     /**

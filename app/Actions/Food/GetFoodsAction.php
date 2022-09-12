@@ -15,8 +15,7 @@ class GetFoodsAction
      */
     public function execute(Request $request): FoodCollection
     {
-        $foods = Food::with(['nutrients.serving_size'])
-            ->when($request->get('group_id', false), function($query) use ($request) {
+        $foods = Food::when($request->get('group_id', false), function($query) use ($request) {
                 $query->where('food_group_id', $request->get('group_id'));
             })
             ->paginate($request->get('per_page', 10));
