@@ -3,13 +3,9 @@
 namespace App\Services\Food\Providers;
 
 use Goutte\Client;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use App\Services\Food\DTO\FoodDTO;
-use Symfony\Component\DomCrawler\Crawler;
 use App\Services\Food\DTO\FoodGroupDTO;
 use App\Services\Food\Interfaces\FoodCrawlerProviderInterface;
-
 
 class FatSecretGoutteProvider implements FoodCrawlerProviderInterface
 {
@@ -41,7 +37,8 @@ class FatSecretGoutteProvider implements FoodCrawlerProviderInterface
 	 *
 	 * @return \App\Services\Food\DTO\FoodGroupDTO[]
 	 */
-	function crawlFoodGroups(): array {
+	function crawlFoodGroups(): array
+    {
 
         $crawler = $this->client->request('GET', $this->baseUrl . '/calories-nutrition');
 
@@ -64,7 +61,8 @@ class FatSecretGoutteProvider implements FoodCrawlerProviderInterface
 	 *
 	 * @return \App\Services\Food\DTO\FoodDTO[]
 	 */
-	function crawlFoods(): array {
+	function crawlFoods(): array
+    {
 
         $foods = [];
 
@@ -93,7 +91,8 @@ class FatSecretGoutteProvider implements FoodCrawlerProviderInterface
 	 *
 	 * @return \App\Services\Food\DTO\FoodNutrientDTO[]
 	 */
-	function crawlFoodNutrients(): array {
+	function crawlFoodNutrients(): array
+    {
         return [];
 	}
 }

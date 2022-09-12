@@ -25,6 +25,6 @@ require __DIR__.'/auth.php';
  */
 
 Route::get('/', function () {
-    return response()->json(['message' => 'Welcome to the Fitness Pal API clone.']);
+    return response()->json(['message' => 'Welcome to the Food Facts API.']);
 });
 

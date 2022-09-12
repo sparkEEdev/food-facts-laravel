@@ -18,7 +18,7 @@ class CreateFoodsTable extends Migration
             $table->unsignedBigInteger('food_group_id')->nullable();
             $table->foreign('food_group_id')->references('id')->on('food_groups');
             $table->string('name');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('description');
             $table->timestamps();
         });

@@ -6,6 +6,9 @@ use App\Models\Food;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Actions\Food\GetFoodsAction;
+use App\Actions\Food\ShowFoodAction;
+use App\Http\Requests\v1\Food\UpdateFoodRequest;
+use App\Actions\Food\UpdateFoodAction;
 
 class FoodController extends Controller
 {
@@ -43,12 +46,14 @@ class FoodController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Food  $food
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $id
+     * @param  \App\Actions\Food\ShowFoodAction  $showFoodAction
+     * @return \App\Http\Resources\v1\Food\FoodResource
      */
-    public function show(Food $food)
+    public function show(Request $request, int $id, ShowFoodAction $showFoodAction)
     {
-        //
+        return $showFoodAction->execute($request, $id);
     }
 
     /**
@@ -66,12 +71,13 @@ class FoodController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Food  $food
-     * @return \Illuminate\Http\Response
+     * @param  int $food
+     * @param  \App\Actions\Food\UpdateFoodAction  $updateFoodAction
+     * @return \App\Http\Resources\v1\Food\FoodResource
      */
-    public function update(Request $request, Food $food)
+    public function update(UpdateFoodRequest $request, int $id, UpdateFoodAction $updateFoodAction)
     {
-        //
+        return $updateFoodAction->execute($request, $id);
     }
 
     /**

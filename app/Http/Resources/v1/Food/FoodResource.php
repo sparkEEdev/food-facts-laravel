@@ -24,8 +24,8 @@ class FoodResource extends JsonResource
             'description' => $this->description,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'nutrients' => $this->whenLoaded('nutrients', fn() => new FoodNutrientCollection($this->nutrients)),
-            'group' => $this->whenLoaded('group', fn() => new FoodGroupResource($this->group)),
+            'nutrients' => new FoodNutrientCollection($this->whenLoaded('nutrients')),
+            'group' => new FoodGroupResource($this->whenLoaded('group')),
         ];
     }
 }
