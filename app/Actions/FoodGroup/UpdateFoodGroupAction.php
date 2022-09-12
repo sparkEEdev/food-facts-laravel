@@ -31,12 +31,17 @@ class UpdateFoodGroupAction
 
         } catch (ModelNotFoundException $e) {
 
-            return response()->json(['message' => 'Food not found'], 404);
+            return response()->json(['message' => 'Food group not found.'], 404);
 
         } catch (QueryException $e) {
 
-            if ($e->errorInfo[1] == 1062) {
+            /* if ($e->errorInfo[1] == 1062) {
                 // unique constraint violation (duplicate entry)
+                return response()->json(['message' => 'Name of the food group is already taken.'], 400);
+            } */
+
+            if ($e->errorInfo[1] == 19) {
+                // constraint violation (unique)
                 return response()->json(['message' => 'Name of the food group is already taken.'], 400);
             }
 
