@@ -5,10 +5,10 @@ namespace Tests\Feature;
 use stdClass;
 use Tests\TestCase;
 use App\Services\Food\DTO\FoodDTO;
-use App\Services\Food\DTO\FoodGroupDTO;
 use App\Services\Food\FoodService;
+use App\Services\Food\DTO\FoodGroupDTO;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Food\Providers\FatSecretGoutteProvider;
+use App\Services\Food\Interfaces\FoodCrawlerProviderInterface;
 
 class FoodServiceTest extends TestCase
 {
@@ -23,14 +23,14 @@ class FoodServiceTest extends TestCase
     {
         $this->expectException(\App\Services\Food\Exceptions\InvalidValueException::class);
 
-        $provider = $this->createMock(FatSecretGoutteProvider::class);
+        $provider = $this->createMock(FoodCrawlerProviderInterface::class);
 
         $provider->method('crawlFoodGroups')
-            ->willReturn([
-                new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'),
-                new stdClass(), // Invalid value
-                new FoodGroupDTO('Sweets', 'Sweets are foods that are sweet to taste, especially desserts.'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodGroupDTO('Meat', 'Meat is animal flesh that is eaten as food.'));
+                $callback(new stdClass());
+                $callback(new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'));
+            });
 
         $service = new FoodService($provider);
 
@@ -46,14 +46,14 @@ class FoodServiceTest extends TestCase
     {
         $this->expectException(\App\Services\Food\Exceptions\InvalidValueException::class);
 
-        $provider = $this->createMock(FatSecretGoutteProvider::class);
+        $provider = $this->createMock(FoodCrawlerProviderInterface::class);
 
         $provider->method('crawlFoods')
-            ->willReturn([
-                new FoodDTO('Apple', 'Apple description', 'Fruits'),
-                new stdClass(), // Invalid value
-                new FoodDTO('Wheat', 'Wheat description', 'Grains'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodDTO('Apple', 'Apple description', 'Fruits'));
+                $callback(new stdClass());
+                $callback(new FoodDTO('Wheat', 'Wheat description', 'Grains'));
+            });
 
         $service = new FoodService($provider);
 
@@ -62,15 +62,13 @@ class FoodServiceTest extends TestCase
 
     public function test_process_food_groups_saves_to_database()
     {
-        $provider = $this->createMock(FatSecretGoutteProvider::class);
+        $provider = $this->createMock(FoodCrawlerProviderInterface::class);
 
         $provider->method('crawlFoodGroups')
-            ->willReturn([
-                new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'),
-                new FoodGroupDTO('Meat', 'Meat is animal flesh that is eaten as food.'),
-                new FoodGroupDTO('Fats', 'Fats are a group of naturally occurring organic compounds that are fatty acids and glycerol, the esters of fatty acids.'),
-                new FoodGroupDTO('Sweets', 'Sweets are foods that are sweet to taste, especially desserts.'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodGroupDTO('Meat', 'Meat is animal flesh that is eaten as food.'));
+                $callback(new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'));
+            });
 
         $service = new FoodService($provider);
 
@@ -85,16 +83,15 @@ class FoodServiceTest extends TestCase
 
     public function test_process_foods_saves_to_database()
     {
-        $provider = $this->createMock(FatSecretGoutteProvider::class);
+        $provider = $this->createMock(FoodCrawlerProviderInterface::class);
 
         $provider->method('crawlFoods')
-            ->willReturn([
-                new FoodDTO('Apple', 'Apple description', 'Fruits'),
-                new FoodDTO('Wheat', 'Wheat description', 'Grains'),
-                new FoodDTO('Beef', 'Beef description', 'Meat'),
-                new FoodDTO('Butter', 'Butter description', 'Fats'),
-                new FoodDTO('Chocolate', 'Chocolate description', 'Sweets'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodDTO('Apple', 'Apple description', 'Fruits'));
+                $callback(new FoodDTO('Wheat', 'Wheat description', 'Grains'));
+                $callback(new FoodDTO('Beef', 'Beef description', 'Meat'));
+                $callback(new FoodDTO('Pork', 'Pork description', 'Meat'));
+            });
 
         $service = new FoodService($provider);
 
@@ -109,20 +106,20 @@ class FoodServiceTest extends TestCase
 
     public function test_validate_relation_between_food_group_and_foods()
     {
-        $provider = $this->createMock(FatSecretGoutteProvider::class);
+        $provider = $this->createMock(FoodCrawlerProviderInterface::class);
 
         $provider->method('crawlFoodGroups')
-            ->willReturn([
-                new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'),
-                new FoodGroupDTO('Meat', 'Meat is animal flesh that is eaten as food.'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'));
+                $callback(new FoodGroupDTO('Meat', 'Meat is animal flesh that is eaten as food.'));
+            });
 
         $provider->method('crawlFoods')
-            ->willReturn([
-                new FoodDTO('Apple', 'Apple description', 'Fruits'),
-                new FoodDTO('Wheat', 'Wheat description', 'Grains'),
-                new FoodDTO('Beef', 'Beef description', 'Meat'),
-            ]);
+            ->willReturnCallback(function ($callback) {
+                $callback(new FoodDTO('Apple', 'Apple description', 'Fruits'));
+                $callback(new FoodDTO('Wheat', 'Wheat description', 'Grains'));
+                $callback(new FoodDTO('Beef', 'Beef description', 'Meat'));
+            });
 
         $service = new FoodService($provider);
 
