@@ -5,17 +5,20 @@ namespace App\Services\Food\Interfaces;
 interface FoodCrawlerProviderInterface
 {
     /**
-     * @return \App\Services\Food\DTO\FoodGroupDTO[]
+     * @param callable $callback
+     * @return void
      */
-    public function crawlFoodGroups(): array;
+    public function crawlFoodGroups(callable $callback): void;
 
     /**
-     * @return \App\Services\Food\DTO\FoodDTO[]
+     * @param callable $callback
+     * @return void
      */
-    public function crawlFoods(): array;
+    public function crawlFoods(callable $callback): void;
 
     /**
-     * @return \App\Services\Food\DTO\FoodNutrientDTO[]
+     * @param callable $callback
+     * @return void
      */
-    public function crawlFoodNutrients(): array;
+    public function crawlFoodNutrients(callable $callback): void;
 }
