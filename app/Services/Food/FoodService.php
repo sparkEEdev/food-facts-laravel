@@ -53,9 +53,10 @@ class FoodService
 
             $food = Food::updateOrCreate(
                 [
-                    'name' => $food->name(),
+                    'slug' => Str::slug($food->name(). '-'),
                 ],
                 [
+                    'name' => $food->name(),
                     'description' => $food->description(),
                     'food_group_id' => $group ? $group->id : null,
                 ],
