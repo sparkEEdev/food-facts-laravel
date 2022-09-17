@@ -25,10 +25,7 @@ class FoodService
 
     public function processFoodGroups()
     {
-        $foodGroups = $this->provider->crawlFoodGroups();
-
-        foreach ($foodGroups as $foodGroup) {
-
+        $this->provider->crawlFoodGroups(function ($foodGroup) {
             if ( !($foodGroup instanceof FoodGroupDTO) ) {
                 throw new InvalidValueException('FoodGroupDTO expected');
             }
@@ -41,15 +38,12 @@ class FoodService
                     'description' => $foodGroup->description(),
                 ]
             );
-        }
+        });
     }
 
     public function processFoods()
     {
-        $foods = $this->provider->crawlFoods();
-
-        foreach ($foods as $food) {
-
+        $this->provider->crawlFoods(function ($food) {
             if ( !($food instanceof FoodDTO) ) {
                 throw new InvalidValueException('FoodDTO expected');
             }
@@ -59,15 +53,15 @@ class FoodService
 
             $food = Food::updateOrCreate(
                 [
-                    'name' => $food->name(),
+                    'slug' => Str::slug($food->name(). '-'),
                 ],
                 [
+                    'name' => $food->name(),
                     'description' => $food->description(),
                     'food_group_id' => $group ? $group->id : null,
                 ],
             );
-
-        }
+        });
     }
 
     public function processFoodNutrients()

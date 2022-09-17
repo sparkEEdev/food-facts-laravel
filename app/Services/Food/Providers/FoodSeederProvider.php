@@ -14,13 +14,9 @@ use App\Services\Food\Interfaces\FoodCrawlerProviderInterface;
  */
 class FoodSeederProvider implements FoodCrawlerProviderInterface
 {
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodGroupDTO[]
-	 */
-	function crawlFoodGroups(): array
+	public function crawlFoodGroups(callable $callback): void
     {
-       return [
+       $data = [
             new FoodGroupDTO('Fruits', 'Fruits are the sweet and fleshy product of a tree or other plant that contains seed and can be eaten as food.'),
             new FoodGroupDTO('Vegetables', 'Vegetables are parts of plants that are consumed by humans as food as part of a meal.'),
             new FoodGroupDTO('Grains', 'Grains are a type of food made from the seeds of grasses, which are cultivated for human or animal consumption.'),
@@ -31,16 +27,16 @@ class FoodSeederProvider implements FoodCrawlerProviderInterface
             new FoodGroupDTO('Fats', 'Fats are a group of naturally occurring organic compounds that are found in animals and plants.'),
             new FoodGroupDTO('Spices', 'Spices are a product of the plant kingdom used for flavoring, coloring or preserving food.'),
             new FoodGroupDTO('Herbs', 'Herbs are plants with savory or aromatic properties that are used for flavoring food, in medicine, or as a garnish.'),
-       ];
+        ];
+
+        foreach ($data as $foodGroup) {
+            $callback($foodGroup);
+        }
 	}
 
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodDTO[]
-	 */
-	function crawlFoods(): array
+	public function crawlFoods(callable $callback): void
     {
-        return [
+        $data = [
             new FoodDTO('Apple', 'An apple is a sweet, edible fruit produced by an apple tree (Malus domestica).', 'Fruits'),
             new FoodDTO('Banana', 'A banana is an edible fruit – botanically a berry – produced by several kinds of large herbaceous flowering plants in the genus Musa.', 'Fruits'),
 
@@ -56,14 +52,14 @@ class FoodSeederProvider implements FoodCrawlerProviderInterface
             new FoodDTO('Beef', 'Beef is the culinary name for meat from cattle, particularly skeletal muscle.', 'Meat'),
             new FoodDTO('Pork', 'Pork is the culinary name for meat from the domestic pig (Sus scrofa domesticus).', 'Meat'),
         ];
+
+        foreach ($data as $foodGroup) {
+            $callback($foodGroup);
+        }
 	}
 
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodNutrientDTO[]
-	 */
-	function crawlFoodNutrients(): array
+	function crawlFoodNutrients(callable $callback): void
     {
-        return [];
+        //
 	}
 }

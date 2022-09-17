@@ -33,66 +33,42 @@ class FatSecretGoutteProvider implements FoodCrawlerProviderInterface
         $this->client = new Client();
     }
 
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodGroupDTO[]
-	 */
-	function crawlFoodGroups(): array
+	public function crawlFoodGroups(callable $callback): void
     {
-
         $crawler = $this->client->request('GET', $this->baseUrl . '/calories-nutrition');
 
-        $foodGroups = $crawler->filter('.details')->each(function ($node) {
+        $crawler->filter('.details')->each(function ($node) use ($callback) {
 
             $name = $node->filter('.prominent > b')->text();
             $description = $node->filter('.smallText')->text();
 
             $this->foodGroupUrls[] = $node->filter('.prominent')->attr('href');
 
-            $foodGroup = new FoodGroupDTO($name, $description);
-
-            return $foodGroup;
+            $callback(new FoodGroupDTO($name, $description));
         });
-
-        return $foodGroups;
 	}
 
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodDTO[]
-	 */
-	function crawlFoods(): array
+	public function crawlFoods(callable $callback): void
     {
-
-        $foods = [];
-
         foreach ($this->foodGroupUrls as $groupUrl) {
             $crawler = $this->client->request('GET', $this->baseUrl . $groupUrl);
 
             $groupName = $crawler->filter('.title')->text();
 
-            $data = $crawler->filter('.food_links > a')->each(function ($node) use ($groupName) {
+            $crawler->filter('.food_links > a')->each(function ($node) use ($groupName, $callback) {
 
                 $this->foodUrls[] = $node->attr('href');
                 $name = $node->text();
 
-                return new FoodDTO($name, '', $groupName);
+                $callback(new FoodDTO($name, '', $groupName));
             });
-
-            $foods = array_merge($foods, $data);
 
             sleep(3);
         }
-
-        return $foods;
 	}
 
-	/**
-	 *
-	 * @return \App\Services\Food\DTO\FoodNutrientDTO[]
-	 */
-	function crawlFoodNutrients(): array
+	public function crawlFoodNutrients(callable $callback): void
     {
-        return [];
+        //
 	}
 }
